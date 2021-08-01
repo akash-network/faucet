@@ -1,0 +1,17 @@
+<html>
+
+<head>
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <h1>{{title}}</h1>
+  {{#if user}}
+  <p>Welcome {{user.username}}</p>
+  {{else}}
+  <p><a href='/auth/github'>Sign in With GitHub</a></p>
+  {{/if}}
+</body>
+
+</html>

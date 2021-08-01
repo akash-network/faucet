@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  api:
+    build: .
+    depends_on:
+      - "postgres"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: faucet
+      GITHUB_CALLBACK_URL: http://localhost:8080/auth/github/callback
+      # GITHUB_CLIENT_ID: x
+      # GITHUB_CLIENT_SECRET: x
+      # SESSION_SECRET: x
+    env_file:
+      - .env
+    ports:
+      - '8080:3000'
+    volumes:
+      - .:/usr/src/app
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: faucet
+    ports:
+      - '5432:5432'
+    volumes:
+      - faucet-db:/var/lib/postgresql/data
+volumes:
+  faucet-db:
