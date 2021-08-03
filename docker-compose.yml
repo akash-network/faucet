@@ -12,6 +12,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: test
       POSTGRES_DB: faucet
+      FAUCET_AMOUNT: 1000
+      FAUCET_FEES: 5000
+      FAUCET_COOLDOWN_HOURS: 24
+      RPC_ENDPOINT: http://apollo.beyno.de:36657
       GITHUB_CALLBACK_URL: http://localhost:8080/auth/github/callback
       # GITHUB_CLIENT_ID: x
       # GITHUB_CLIENT_SECRET: x
