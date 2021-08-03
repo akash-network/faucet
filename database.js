@@ -24,7 +24,22 @@ const User = sequelize.define('user', {
         allowNull: false
     },
 });
+const Transaction = sequelize.define('transaction', {
+    address: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    amountUakt: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+});
+
+User.hasMany(Transaction)
+Transaction.belongsTo(User)
+
 module.exports = {
     sequelize: sequelize,
-    User: User
+    User: User,
+    Transaction: Transaction
 };
