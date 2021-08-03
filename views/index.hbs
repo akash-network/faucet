@@ -7,8 +7,14 @@
 
 <body>
   <h1>{{title}}</h1>
+  <p>Faucet address: {{address}}</p>
   {{#if user}}
   <p>Welcome {{user.username}}</p>
+  <form action="/faucet" method="post">
+    <label for="address">Enter your address: </label>
+    <input id="address" type="text" name="address">
+    <input type="submit" value="Fund me">
+  </form>
   {{else}}
   <p><a href='/auth/github'>Sign in With GitHub</a></p>
   {{/if}}

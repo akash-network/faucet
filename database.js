@@ -10,7 +10,7 @@ const sequelize = new Sequelize(process.env.POSTGRES_DB || 'postgres',
             ssl: process.env.POSTGRES_SSL == "true"
         }
     });
-const User = sequelize.define('User', {
+const User = sequelize.define('user', {
     username: {
         type: DataTypes.STRING,
         allowNull: false
@@ -19,7 +19,7 @@ const User = sequelize.define('User', {
         type: DataTypes.JSON,
         allowNull: false
     },
-    access_token: {
+    accessToken: {
         type: DataTypes.STRING,
         allowNull: false
     },
