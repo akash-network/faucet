@@ -28,8 +28,7 @@ const sendTokens = async (recipient, amount_uakt) => {
       amount: amount,
     },
   };
-  const result = await client.signAndBroadcast(account.address, [sendMsg], fee, "Sent from faucet");
-  assertIsBroadcastTxSuccess(result);
+  return await client.signAndBroadcast(account.address, [sendMsg], fee, "Sent from faucet");
 }
 
 module.exports = {

@@ -11,15 +11,24 @@ const sequelize = new Sequelize(process.env.POSTGRES_DB || 'postgres',
     }
   });
 const User = sequelize.define('user', {
-  username: {
+  sub: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  nickname: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  profile: {
-    type: DataTypes.JSON,
+  name: {
+    type: DataTypes.STRING,
     allowNull: false
   },
-  accessToken: {
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  picture: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -33,6 +42,10 @@ const Transaction = sequelize.define('transaction', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  transactionHash: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
 });
 
 const latestTransactionSince = async (user, date) => {
@@ -41,6 +54,9 @@ const latestTransactionSince = async (user, date) => {
       userId: user.id,
       createdAt: {
         [Op.gt]: date
+      },
+      transactionHash: {
+        [Op.not]: null
       }
     },
     order: [
@@ -49,8 +65,8 @@ const latestTransactionSince = async (user, date) => {
   })
 }
 
-User.hasMany(Transaction)
-Transaction.belongsTo(User)
+Transaction.belongsTo(User, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
+User.hasMany(Transaction, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
 
 module.exports = {
   sequelize: sequelize,
