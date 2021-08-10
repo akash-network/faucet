@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router()
 
 var got = require('got');
-var { User, Transaction, latestTransactionSince } = require('../database')
+var { User, Transaction, BlockedAddress, latestTransactionSince } = require('../database')
 var faucet = require("../faucet")
 
 const DOMAIN = process.env.DOMAIN
@@ -25,7 +25,18 @@ async function rateLimit(req, res, next) {
   next()
 }
 
-router.post('/', ensureAuthenticated, rateLimit, async (req, res, next) => {
+async function blockedAddresses(req, res, next) {
+  const { address } = req.body
+  if(address){
+    let blocked = await BlockedAddress.findOne({ where: { address } })
+    if(blocked){
+      return res.status(403).send(JSON.stringify({'error': 'Blocked address'}));
+    }
+  }
+  next()
+}
+
+router.post('/', ensureAuthenticated, blockedAddresses, rateLimit, async (req, res, next) => {
   const { address } = req.body
 
   try {

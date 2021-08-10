@@ -11,6 +11,7 @@ var indexRouter = require('./routes/index')
 var faucetRouter = require('./routes/faucet')
 var usersRouter = require('./routes/users')
 var transactionsRouter = require('./routes/transactions')
+var blockedAddressesRouter = require('./routes/blocked-addresses')
 
 var app = express()
 
@@ -47,5 +48,6 @@ app.use('/', indexRouter)
 app.use('/faucet', faucetRouter)
 app.use('/users', usersRouter)
 app.use('/transactions', transactionsRouter)
+app.use('/blocked-addresses', blockedAddressesRouter)
 
 module.exports = app

@@ -47,6 +47,13 @@ const Transaction = sequelize.define('transaction', {
     allowNull: true
   },
 });
+const BlockedAddress = sequelize.define('blockedAddress', {
+  address: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  }
+});
 
 const latestTransactionSince = async (user, date) => {
   return await Transaction.findOne({
@@ -69,8 +76,9 @@ Transaction.belongsTo(User, { foreignKey: { allowNull: false }, onDelete: 'CASCA
 User.hasMany(Transaction, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
 
 module.exports = {
-  sequelize: sequelize,
-  User: User,
-  Transaction: Transaction,
-  latestTransactionSince: latestTransactionSince
+  sequelize,
+  User,
+  Transaction,
+  BlockedAddress,
+  latestTransactionSince
 };
