@@ -19,8 +19,7 @@ router.get('/', async (req, res, next) => {
   }
 
   res.status(200).send(JSON.stringify({
-    user: req.user,
-    address,
+    faucetAddress: address,
     unlockDate
   }));
 })

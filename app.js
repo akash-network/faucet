@@ -9,6 +9,7 @@ var { User } = require('./database')
 
 var indexRouter = require('./routes/index')
 var faucetRouter = require('./routes/faucet')
+var transactionsRouter = require('./routes/transactions')
 
 var app = express()
 
@@ -43,5 +44,6 @@ app.use(loadUser);
 
 app.use('/', indexRouter)
 app.use('/faucet', faucetRouter)
+app.use('/transactions', transactionsRouter)
 
 module.exports = app
