@@ -26,7 +26,7 @@ router.get('/', ensureAuthenticated, ensurePermission, (req, res, next) => {
 router.post('/', ensureAuthenticated, ensurePermission, async (req, res, next) => {
   const { address } = req.body
   try {
-    let blocked = await db.BlockedAddress.create({ address })
+    let blocked = await db.BlockedAddress.create({ address: address.trim() })
     res.status(201).send()
   } catch (error) {
     res.status(422).send(JSON.stringify({'error': error.message}));

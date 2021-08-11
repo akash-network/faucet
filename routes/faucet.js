@@ -28,7 +28,7 @@ async function rateLimit(req, res, next) {
 async function blockedAddresses(req, res, next) {
   const { address } = req.body
   if(address){
-    let blocked = await BlockedAddress.findOne({ where: { address } })
+    let blocked = await BlockedAddress.findOne({ where: { address: address.trim() } })
     if(blocked){
       return res.status(403).send(JSON.stringify({'error': 'Blocked address'}));
     }
