@@ -2,11 +2,13 @@ var { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing")
 var { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient, coins, StdFee } = require("@cosmjs/stargate")
 var parse = require('parse-duration')
 
+const NETWORK_RPC_NODE = process.env.NETWORK_RPC_NODE
 const FAUCET_MNEMONIC = process.env.FAUCET_MNEMONIC
-const FAUCET_FEES = process.env.FAUCET_FEES || 5000
 const FAUCET_WAIT_PERIOD = process.env.FAUCET_WAIT_PERIOD || '24h'
 const FAUCET_DISTRIBUTION_AMOUNT = process.env.FAUCET_DISTRIBUTION_AMOUNT || 1000
-const NETWORK_RPC_NODE = process.env.NETWORK_RPC_NODE
+const FAUCET_FEES = process.env.FAUCET_FEES || 5000
+const FAUCET_GAS = process.env.FAUCET_GAS || 180000
+const FAUCET_MEMO = process.env.FAUCET_MEMO
 
 const getWallet = () => {
   return DirectSecp256k1HdWallet.fromMnemonic(FAUCET_MNEMONIC, { prefix: 'akash' })
@@ -31,7 +33,7 @@ const sendTokens = async (recipient, amount_uakt) => {
   const amount = coins(parseInt(amount_uakt), 'uakt')
   const fee = {
     amount: coins(parseInt(FAUCET_FEES), "uakt"),
-    gas: "180000"
+    gas: FAUCET_GAS
   }
   const sendMsg = {
     typeUrl: "/cosmos.bank.v1beta1.MsgSend",
@@ -41,7 +43,7 @@ const sendTokens = async (recipient, amount_uakt) => {
       amount: amount,
     },
   };
-  return await client.signAndBroadcast(account.address, [sendMsg], fee, "Sent from faucet");
+  return await client.signAndBroadcast(account.address, [sendMsg], fee, FAUCET_MEMO);
 }
 
 module.exports = {

@@ -13,9 +13,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: test
       NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
+      FAUCET_WAIT_PERIOD: 1m
       FAUCET_DISTRIBUTION_AMOUNT: 1000
       FAUCET_FEES: 5000
-      FAUCET_WAIT_PERIOD: 1m
+      FAUCET_GAS: 180000
+      FAUCET_MEMO: Sent from Faucet
       AUTH0_DOMAIN: akash-faucet.us.auth0.com
       AUTH0_AUDIENCE: https://faucet.akash.host
     env_file:
