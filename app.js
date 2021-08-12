@@ -1,6 +1,5 @@
 var express = require('express')
 var jwt = require('express-jwt');
-var jwtAuthz = require('express-jwt-authz');
 var jwksRsa = require('jwks-rsa');
 var cors = require('cors');
 var logger = require('morgan')
@@ -15,9 +14,8 @@ var blockedAddressesRouter = require('./routes/blocked-addresses')
 
 var app = express()
 
-const SESSION_SECRET = process.env.SESSION_SECRET
-const DOMAIN = process.env.DOMAIN
-const AUDIENCE = process.env.AUDIENCE
+const DOMAIN = process.env.AUTH0_DOMAIN
+const AUDIENCE = process.env.AUTH0_AUDIENCE
 
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({

@@ -4,8 +4,6 @@ var router = express.Router()
 var { User, latestTransactionSince } = require('../database')
 var faucet = require("../faucet")
 
-const FAUCET_COOLDOWN_HOURS = process.env.FAUCET_COOLDOWN_HOURS || 24
-
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   const wallet = await faucet.getWallet()
@@ -13,9 +11,9 @@ router.get('/', async (req, res, next) => {
   let unlockDate
 
   if(req.user && req.user.id){
-    let cooldownDate = new Date(new Date() - FAUCET_COOLDOWN_HOURS * 60 * 60 * 1000)
+    let cooldownDate = new Date(new Date() - faucet.getWaitPeriod())
     transaction = await latestTransactionSince(req.user, cooldownDate)
-    if(transaction) unlockDate = new Date(transaction.createdAt.getTime() + FAUCET_COOLDOWN_HOURS * 60 * 60 * 1000)
+    if(transaction) unlockDate = new Date(transaction.createdAt.getTime() + faucet.getWaitPeriod())
   }
 
   res.status(200).send(JSON.stringify({

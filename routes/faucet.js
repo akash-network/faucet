@@ -5,9 +5,7 @@ var got = require('got');
 var { User, Transaction, BlockedAddress, latestTransactionSince } = require('../database')
 var faucet = require("../faucet")
 
-const DOMAIN = process.env.DOMAIN
-const FAUCET_AMOUNT = process.env.FAUCET_AMOUNT || 1000
-const FAUCET_COOLDOWN_HOURS = process.env.FAUCET_COOLDOWN_HOURS || 24
+const DOMAIN = process.env.AUTH0_DOMAIN
 
 async function ensureAuthenticated(req, res, next) {
   if (req.user) return next()
@@ -16,7 +14,7 @@ async function ensureAuthenticated(req, res, next) {
 
 async function rateLimit(req, res, next) {
   if(req.user.id){
-    let cooldownDate = new Date(new Date() - FAUCET_COOLDOWN_HOURS * 60 * 60 * 1000)
+    let cooldownDate = new Date(new Date() - faucet.getWaitPeriod())
     let transaction = await latestTransactionSince(req.user, cooldownDate)
     if(transaction){
       return res.status(403).send(JSON.stringify({'error': 'Cooldown'}));
@@ -51,8 +49,8 @@ router.post('/', ensureAuthenticated, blockedAddresses, rateLimit, async (req, r
       let user = await User.create({ sub: req.user.sub, nickname, name, email, picture })
       req.user = Object.assign(req.user, user.dataValues)
     }
-    let transaction = await Transaction.create({ userId: req.user.id, address: address, amountUakt: FAUCET_AMOUNT })
-    const result = await faucet.sendTokens(address, FAUCET_AMOUNT)
+    let transaction = await Transaction.create({ userId: req.user.id, address: address, amountUakt: faucet.getDistributionAmount() })
+    const result = await faucet.sendTokens(address)
     transaction.update({transactionHash: result.transactionHash})
     res.status(201).send(JSON.stringify({'transactionHash': result.transactionHash}));
   } catch (error) {

@@ -9,17 +9,15 @@ services:
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
+      POSTGRES_DB: faucet
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: test
-      POSTGRES_DB: faucet
-      FAUCET_AMOUNT: 1000
+      NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
+      FAUCET_DISTRIBUTION_AMOUNT: 1000
       FAUCET_FEES: 5000
-      FAUCET_COOLDOWN_HOURS: 24
-      RPC_ENDPOINT: http://apollo.beyno.de:36657
-      GITHUB_CALLBACK_URL: http://localhost:8080/auth/github/callback
-      # GITHUB_CLIENT_ID: x
-      # GITHUB_CLIENT_SECRET: x
-      # SESSION_SECRET: x
+      FAUCET_WAIT_PERIOD: 1m
+      AUTH0_DOMAIN: akash-faucet.us.auth0.com
+      AUTH0_AUDIENCE: https://faucet.akash.host
     env_file:
       - .env
     ports:

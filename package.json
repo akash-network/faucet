@@ -18,6 +18,7 @@
     "jwks-rsa": "^2.0.4",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.12",
+    "parse-duration": "^1.0.0",
     "pg": "^8.7.1",
     "sequelize": "^6.6.5"
   }
