@@ -22,14 +22,18 @@ const getDistributionAmount = () => {
   return FAUCET_DISTRIBUTION_AMOUNT
 }
 
+const getChainId = async () => {
+  const wallet = await getWallet()
+  const client = await SigningStargateClient.connectWithSigner(NETWORK_RPC_NODE, wallet)
+  return await client.getChainId()
+}
+
 const sendTokens = async (recipient, amount_uakt) => {
   const wallet = await getWallet()
   const [account] = await wallet.getAccounts()
+  const client = await SigningStargateClient.connectWithSigner(NETWORK_RPC_NODE, wallet)
 
   if(!amount_uakt) amount_uakt = getDistributionAmount()
-
-  const client = await SigningStargateClient.connectWithSigner(NETWORK_RPC_NODE, wallet);
-
   const amount = coins(parseInt(amount_uakt), 'uakt')
   const fee = {
     amount: coins(parseInt(FAUCET_FEES), "uakt"),
@@ -42,13 +46,14 @@ const sendTokens = async (recipient, amount_uakt) => {
       toAddress: recipient,
       amount: amount,
     },
-  };
-  return await client.signAndBroadcast(account.address, [sendMsg], fee, FAUCET_MEMO);
+  }
+  return await client.signAndBroadcast(account.address, [sendMsg], fee, FAUCET_MEMO)
 }
 
 module.exports = {
-  getWallet: getWallet,
-  getWaitPeriod: getWaitPeriod,
-  getDistributionAmount: getDistributionAmount,
-  sendTokens: sendTokens
+  getWallet,
+  getWaitPeriod,
+  getDistributionAmount,
+  getChainId,
+  sendTokens
 }

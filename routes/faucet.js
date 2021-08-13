@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 
-var got = require('got');
+var got = require('got')
 var { User, Transaction } = require('../database')
 var faucet = require("../faucet")
 var { ensureAuthenticated, blockedAddresses, rateLimit } = require('../utils')
@@ -16,7 +16,7 @@ router.post('/', ensureAuthenticated, blockedAddresses, rateLimit, async (req, r
       const {body} = await got(`https://${DOMAIN}/userinfo`, {
         headers: { authorization: req.headers.authorization },
         responseType: 'json'
-      });
+      })
       let { nickname, name, email, picture } = body
       let user = await User.create({ sub: req.user.sub, nickname, name, email, picture })
       req.user = Object.assign(req.user, user.dataValues)
@@ -28,9 +28,9 @@ router.post('/', ensureAuthenticated, blockedAddresses, rateLimit, async (req, r
     })
     const result = await faucet.sendTokens(address)
     transaction.update({transactionHash: result.transactionHash})
-    res.status(201).send(JSON.stringify({'transactionHash': result.transactionHash}));
+    res.status(201).send(JSON.stringify({'transactionHash': result.transactionHash}))
   } catch (error) {
-    res.status(422).send(JSON.stringify({'error': error.message}));
+    res.status(422).send(JSON.stringify({'error': error.message}))
   }
 })
 

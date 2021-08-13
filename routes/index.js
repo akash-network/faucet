@@ -7,8 +7,10 @@ var faucet = require("../faucet")
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   const wallet = await faucet.getWallet()
+  const chainId = await faucet.getChainId()
+  const distributionAmount = faucet.getDistributionAmount()
   const [{ address }] = await wallet.getAccounts()
-  let unlockDate
+  var unlockDate
 
   if(req.user && req.user.id){
     let cooldownDate = new Date(new Date() - faucet.getWaitPeriod())
@@ -18,8 +20,10 @@ router.get('/', async (req, res, next) => {
 
   res.status(200).send(JSON.stringify({
     faucetAddress: address,
-    unlockDate
-  }));
+    unlockDate,
+    chainId,
+    distributionAmount
+  }))
 })
 
 module.exports = router
