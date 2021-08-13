@@ -24,7 +24,7 @@ router.post('/', ensureAuthenticated, blockedAddresses, rateLimit, async (req, r
     let transaction = await Transaction.create({
       userId: req.user.id,
       address: address,
-      amountUakt: faucet.getDistributionAmount()
+      amount: faucet.getDistributionAmount()
     })
     const result = await faucet.sendTokens(address)
     transaction.update({transactionHash: result.transactionHash})

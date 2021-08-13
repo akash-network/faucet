@@ -38,7 +38,7 @@ const Transaction = sequelize.define('transaction', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  amountUakt: {
+  amount: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

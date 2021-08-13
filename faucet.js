@@ -6,6 +6,7 @@ const NETWORK_RPC_NODE = process.env.NETWORK_RPC_NODE
 const FAUCET_MNEMONIC = process.env.FAUCET_MNEMONIC
 const FAUCET_WAIT_PERIOD = process.env.FAUCET_WAIT_PERIOD || '24h'
 const FAUCET_DISTRIBUTION_AMOUNT = process.env.FAUCET_DISTRIBUTION_AMOUNT || 1000
+const FAUCET_DENOM = process.env.FAUCET_DENOM || 'uakt'
 const FAUCET_FEES = process.env.FAUCET_FEES || 5000
 const FAUCET_GAS = process.env.FAUCET_GAS || 180000
 const FAUCET_MEMO = process.env.FAUCET_MEMO
@@ -28,24 +29,23 @@ const getChainId = async () => {
   return await client.getChainId()
 }
 
-const sendTokens = async (recipient, amount_uakt) => {
+const sendTokens = async (recipient, amount) => {
   const wallet = await getWallet()
   const [account] = await wallet.getAccounts()
   const client = await SigningStargateClient.connectWithSigner(NETWORK_RPC_NODE, wallet)
+  if(!amount) amount = getDistributionAmount()
 
-  if(!amount_uakt) amount_uakt = getDistributionAmount()
-  const amount = coins(parseInt(amount_uakt), 'uakt')
-  const fee = {
-    amount: coins(parseInt(FAUCET_FEES), "uakt"),
-    gas: FAUCET_GAS
-  }
   const sendMsg = {
     typeUrl: "/cosmos.bank.v1beta1.MsgSend",
     value: {
       fromAddress: account.address,
       toAddress: recipient,
-      amount: amount,
+      amount: coins(parseInt(amount), FAUCET_DENOM),
     },
+  }
+  const fee = {
+    amount: coins(parseInt(FAUCET_FEES), FAUCET_DENOM),
+    gas: FAUCET_GAS
   }
   return await client.signAndBroadcast(account.address, [sendMsg], fee, FAUCET_MEMO)
 }

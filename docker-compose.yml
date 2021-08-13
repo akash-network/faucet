@@ -15,6 +15,7 @@ services:
       NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
       FAUCET_WAIT_PERIOD: 1m
       FAUCET_DISTRIBUTION_AMOUNT: 1000
+      FAUCET_DENOM: uakt
       FAUCET_FEES: 5000
       FAUCET_GAS: 180000
       FAUCET_MEMO: Sent from Faucet
