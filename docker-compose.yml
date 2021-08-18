@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  api:
+    build: .
+    command: npm run dev
+    depends_on:
+      - "postgres"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: faucet
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
+      FAUCET_WAIT_PERIOD: 1m
+      FAUCET_DISTRIBUTION_AMOUNT: 1000
+      FAUCET_DENOM: uakt
+      FAUCET_FEES: 5000
+      FAUCET_GAS: 180000
+      FAUCET_MEMO: Sent from Faucet
+      AUTH0_DOMAIN: akash-faucet.us.auth0.com
+      AUTH0_AUDIENCE: https://faucet.akash.host
+    env_file:
+      - .env
+    ports:
+      - '8080:3000'
+    volumes:
+      - .:/usr/src/app
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: faucet
+    ports:
+      - '5432:5432'
+    volumes:
+      - faucet-db:/var/lib/postgresql/data
+volumes:
+  faucet-db:

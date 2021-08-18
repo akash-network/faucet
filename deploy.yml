@@ -1,0 +1,70 @@
+---
+version: "2.0"
+
+services:
+  api:
+    image: ghcr.io/tombeynon/faucet:v0.0.1-rc1
+    env:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=faucet
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - NETWORK_RPC_NODE=https://rpc.akash.beyno.de:443
+      - FAUCET_WAIT_PERIOD=1d
+      - FAUCET_DISTRIBUTION_AMOUNT=10000
+      - FAUCET_DENOM=uakt
+      - FAUCET_FEES=5000
+      - FAUCET_GAS=180000
+      - FAUCET_MEMO=Sent from Faucet
+      - AUTH0_DOMAIN=mydomain.us.auth0.com
+      - AUTH0_AUDIENCE=https://mydomain.com
+      - FAUCET_MNEMONIC=some secret words here
+    expose:
+      - port: 3000
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    api:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 0.5Gi
+        storage:
+          size: 0.5Gi
+    app:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 0.5Gi
+        storage:
+          size: 0.5Gi
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63
+      pricing:
+        api:
+          denom: uakt
+          amount: 100
+        app:
+          denom: uakt
+          amount: 100
+
+deployment:
+  api:
+    dcloud:
+      profile: api
+      count: 1
+  app:
+    dcloud:
+      profile: app
+      count: 1

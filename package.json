@@ -1,0 +1,25 @@
+{
+  "name": "akash-faucet",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "migrate": "node ./bin/migrate.js",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "@akashnetwork/akashjs": "0.0.7",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-jwt": "^6.0.0",
+    "express-jwt-authz": "^2.4.1",
+    "got": "^11.8.2",
+    "jwks-rsa": "^2.0.4",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.12",
+    "parse-duration": "^1.0.0",
+    "pg": "^8.7.1",
+    "sequelize": "^6.6.5"
+  }
+}
