@@ -6,11 +6,11 @@ on:
       - v*
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: build
+      - name: publish
         run: |
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin
           docker build . --tag ghcr.io/${{ github.repository }}:${GITHUB_REF#refs/tags/}
