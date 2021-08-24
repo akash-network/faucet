@@ -1,11 +1,5 @@
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import {
-  assertIsBroadcastTxSuccess,
-  SigningStargateClient,
-  StargateClient,
-  coins,
-  StdFee,
-} from "@cosmjs/stargate";
+import { SigningStargateClient, coins } from "@cosmjs/stargate";
 import parse from "parse-duration";
 
 const NETWORK_RPC_NODE = process.env.NETWORK_RPC_NODE;

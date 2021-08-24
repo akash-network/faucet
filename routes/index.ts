@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { User, latestTransactionSince } from "../database";
+import { latestTransactionSince } from "../database";
 import * as faucet from "../faucet";
 
 /* GET home page. */

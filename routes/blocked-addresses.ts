@@ -1,5 +1,4 @@
 import express from "express";
-import jwtAuthz from "express-jwt-authz";
 const router = express.Router();
 
 import * as db from "../database";
