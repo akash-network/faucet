@@ -1,2 +1,3 @@
-var db = require('../database.js');
+require("ts-node").register();
+const db = require("../database.js");
 db.sequelize.sync();
