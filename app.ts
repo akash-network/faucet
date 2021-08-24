@@ -13,6 +13,9 @@ import { router as usersRouter } from "./routes/users";
 import { router as transactionsRouter } from "./routes/transactions";
 import { router as blockedAddressesRouter } from "./routes/blocked-addresses";
 
+const PROM_USER = process.env.PROM_USER;
+const PROM_PASSWORD = process.env.PROM_PASSWORD;
+
 async function init() {
   // var app = express();
   const app = fastify({
@@ -56,7 +59,7 @@ async function init() {
     reply: any,
     done: any
   ) {
-    if (username === "prom" && password === "client") {
+    if (username === PROM_USER && password === PROM_PASSWORD) {
       done();
     } else {
       done(new Error("failed call, unauthorized"));
