@@ -18,6 +18,10 @@ export const getWallet = () => {
   });
 };
 
+export const getDenom = () => {
+  return FAUCET_DENOM;
+};
+
 export const getWaitPeriod = () => {
   return parse(FAUCET_WAIT_PERIOD);
 };

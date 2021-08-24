@@ -9,6 +9,7 @@ router.get("/", async (req: any, res: any, next: any) => {
   const wallet = await faucet.getWallet();
   const chainId = await faucet.getChainId();
   const distributionAmount = faucet.getDistributionAmount();
+  const distrbutionDenom = faucet.getDenom();
   const [{ address }] = await wallet.getAccounts();
   var unlockDate;
 
@@ -29,6 +30,7 @@ router.get("/", async (req: any, res: any, next: any) => {
       unlockDate,
       chainId,
       distributionAmount,
+      distrbutionDenom,
     })
   );
 });
