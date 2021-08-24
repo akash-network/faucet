@@ -9,8 +9,8 @@ const counterBlockedAddress = new client.Counter({
 });
 
 const counterCooldown = new client.Counter({
-  name: "fauced_cool_down_count",
-  help: "fauced_cool_down_count is the number of times the an address needed to cool down",
+  name: "faucet_cool_down_count",
+  help: "faucet_cool_down_count is the number of times the an address needed to cool down",
 });
 
 const counterForbidden = new client.Counter({
