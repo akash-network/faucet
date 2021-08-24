@@ -8,6 +8,18 @@ import { ensureAuthenticated, blockedAddresses, rateLimit } from "../utils";
 
 const DOMAIN = process.env.AUTH0_DOMAIN;
 
+import client from "prom-client";
+
+const counterDrip = new client.Counter({
+  name: "faucet_transaction_count",
+  help: "faucet_transaction_count is the number of times the faucet dripped",
+});
+
+const counterDripError = new client.Counter({
+  name: "faucet_transaction_error",
+  help: "faucet_transaction_count is the number of times the faucet errored while dripping",
+});
+
 router.post(
   "/",
   ensureAuthenticated,
@@ -39,10 +51,12 @@ router.post(
       });
       const result = await faucet.sendTokens(address, null);
       transaction.update({ transactionHash: result.transactionHash });
+      counterDrip.inc();
       res
         .status(201)
         .send(JSON.stringify({ transactionHash: result.transactionHash }));
     } catch (error) {
+      counterDripError.inc();
       res.status(422).send(JSON.stringify({ error: error.message }));
     }
   }
