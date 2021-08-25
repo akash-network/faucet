@@ -1,5 +1,7 @@
 FROM node:14
 
+LABEL org.opencontainers.image.source https://github.com/ovrclk/faucet
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
