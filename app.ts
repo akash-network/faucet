@@ -77,6 +77,9 @@ async function init() {
   app.register(metricsPlugin, { endpoint: "/metrics" });
 
   await app.register(fastifyExpress);
+
+  // this cors module is needed for expressjs methods
+  app.use(require("cors")());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(checkJwt);
