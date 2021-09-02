@@ -26,7 +26,11 @@ export async function ensureAuthenticated(req: any, res: any, next: any) {
   if (req.user) return next();
 
   counterForbidden.inc();
-  res.status(403).send(JSON.stringify({ error: "Forbidden" }));
+  res
+    .status(403)
+    .send(
+      JSON.stringify({ error: "User is not authenticated to recieve funds" })
+    );
 }
 
 export async function rateLimit(req: any, res: any, next: any) {
@@ -37,7 +41,11 @@ export async function rateLimit(req: any, res: any, next: any) {
     let transaction = await latestTransactionSince(req.user, cooldownDate);
     if (transaction) {
       counterCooldown.inc();
-      return res.status(403).send(JSON.stringify({ error: "Cooldown" }));
+      return res.status(403).send(
+        JSON.stringify({
+          error: `Fund requested too frequently, cool down period until ${cooldownDate}`,
+        })
+      );
     }
   }
   next();
@@ -51,7 +59,11 @@ export async function blockedAddresses(req: any, res: any, next: any) {
     });
     if (blocked) {
       counterBlockedAddress.inc();
-      return res.status(403).send(JSON.stringify({ error: "Blocked address" }));
+      return res.status(403).send(
+        JSON.stringify({
+          error: "This address has been blocked from recieving funds",
+        })
+      );
     }
   }
   next();
