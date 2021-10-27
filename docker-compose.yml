@@ -13,7 +13,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: test
       NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
-      FAUCET_WAIT_PERIOD: 1m
+      FAUCET_WAIT_PERIOD: 30d
       FAUCET_DISTRIBUTION_AMOUNT: 1000
       FAUCET_DENOM: uakt
       FAUCET_FEES: 5000
