@@ -4,7 +4,12 @@ const router = express.Router();
 import got from "got";
 import { User, Transaction } from "../database";
 import * as faucet from "../faucet";
-import { ensureAuthenticated, blockedAddresses, rateLimit } from "../utils";
+import {
+  ensureAuthenticated,
+  blockedAddresses,
+  rateLimit,
+  decorateGithubUser,
+} from "../utils";
 
 const DOMAIN = process.env.AUTH0_DOMAIN;
 
@@ -23,12 +28,34 @@ const counterDripError = new client.Counter({
 router.post(
   "/",
   ensureAuthenticated,
+  decorateGithubUser,
   blockedAddresses,
   rateLimit,
   async (req: any, res: any, next: any) => {
     const { address } = req.body;
 
     try {
+      if (req.user.github) {
+        const oneQuarter = 7.776e9;
+        const dateSince =
+          new Date().getTime() - new Date(req.user.github.created_at).getTime();
+
+        if (dateSince < oneQuarter) {
+          // user account is under 90 days
+          res.status(422).send(
+            JSON.stringify({
+              error: "social account is not mature enough to request funds.",
+            })
+          );
+        }
+      } else {
+        //throw we need a user account
+        counterDripError.inc();
+        res
+          .status(422)
+          .send(JSON.stringify({ error: "social account not located." }));
+      }
+
       if (!req.user.id) {
         const { body } = await got(`https://${DOMAIN}/userinfo`, {
           headers: { authorization: req.headers.authorization },
