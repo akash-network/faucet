@@ -27,7 +27,7 @@ const counterDripError = new client.Counter({
   help: "faucet_transaction_count is the number of times the faucet errored while dripping",
 });
 
-function isASCII(str) {
+function isASCII(str: string) {
   return /^[\x00-\x7F]*$/.test(str);
 }
 
