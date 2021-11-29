@@ -71,13 +71,6 @@ export async function getAuth0User(userId: string) {
   return body;
 }
 
-export async function getGithubUserData(user: any) {
-  const { body } = await got.post(`${user.url}`, {
-    responseType: "json",
-  });
-  return body;
-}
-
 export async function decorateGithubUser(req: any, res: any, next: any) {
   req.user = req.user || {};
   const authUser: any = await getAuth0User(req.user.sub);
