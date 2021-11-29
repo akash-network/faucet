@@ -100,7 +100,7 @@ export async function rateLimit(req: any, res: any, next: any) {
       counterCooldown.inc();
       return res.status(403).send(
         JSON.stringify({
-          error: `Coin requested too frequently, cool down period is ${"24 hours"}`,
+          error: `Fund requested too frequently, cool down period until ${cooldownDate}`,
         })
       );
     }
