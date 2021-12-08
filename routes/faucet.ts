@@ -53,6 +53,7 @@ router.post(
               error: "social account is not mature enough to request funds.",
             })
           );
+          return; // stop processing tx
         }
       } else {
         //throw we need a user account
@@ -60,6 +61,7 @@ router.post(
         res
           .status(422)
           .send(JSON.stringify({ error: "social account not located." }));
+        return; // stop processing tx
       }
 
       if (!req.user.id) {
