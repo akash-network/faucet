@@ -5,7 +5,7 @@ import fastify from "fastify";
 import fastifyExpress from "fastify-express";
 import fastifyAuth from "fastify-basic-auth";
 import metricsPlugin from "fastify-metrics";
-
+import path from "path";
 import { User } from "./database";
 import { router as indexRouter } from "./routes/index";
 import { router as faucetRouter } from "./routes/faucet";
@@ -15,6 +15,7 @@ import { router as blockedAddressesRouter } from "./routes/blocked-addresses";
 
 const PROM_USER = process.env.PROM_USER;
 const PROM_PASSWORD = process.env.PROM_PASSWORD;
+const DOMAIN = process.env.AUTH0_DOMAIN;
 
 async function init() {
   // var app = express();
@@ -28,16 +29,6 @@ async function init() {
 
   const DOMAIN = process.env.AUTH0_DOMAIN;
   const AUDIENCE = process.env.AUTH0_AUDIENCE;
-
-  const checkJwt = jwt({
-    secret: jwksRsa.expressJwtSecret({
-      jwksUri: `https://${DOMAIN}/.well-known/jwks.json`,
-    }),
-    audience: AUDIENCE,
-    issuer: `https://${DOMAIN}/`,
-    algorithms: ["RS256"],
-    credentialsRequired: false,
-  });
 
   async function loadUser(req: any, res: any, next: any) {
     if (req.user) {
@@ -75,6 +66,9 @@ async function init() {
   });
 
   app.register(metricsPlugin, { endpoint: "/metrics" });
+  app.register(require("fastify-static"), {
+    root: path.join(__dirname, "./static"),
+  });
 
   await app.register(fastifyExpress);
 
@@ -82,8 +76,27 @@ async function init() {
   app.use(require("cors")());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
-  app.use(checkJwt);
-  app.use(loadUser);
+
+  if (DOMAIN) {
+    const checkJwt = jwt({
+      secret: jwksRsa.expressJwtSecret({
+        jwksUri: `https://${DOMAIN}/.well-known/jwks.json`,
+      }),
+      audience: AUDIENCE,
+      issuer: `https://${DOMAIN}/`,
+      algorithms: ["RS256"],
+      credentialsRequired: false,
+    });
+
+    app.use(checkJwt);
+    app.use(loadUser);
+  } else {
+    await app.register(require("point-of-view"), {
+      engine: {
+        handlebars: require("handlebars"),
+      },
+    });
+  }
 
   app.use("/", indexRouter);
   app.use("/faucet", faucetRouter);
