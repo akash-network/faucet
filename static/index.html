@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Faucet</title>
+    <link rel="stylesheet" href="pure.min.css" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+        <a class="pure-menu-heading" href="#">Faucet</a>
+
+        <ul class="pure-menu-list">
+          <li class="pure-menu-item pure-menu-selected">
+            <!-- <a href="#" class="pure-menu-link">Home</a> -->
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="splash-container">
+      <div class="splash">
+        <p class="splash-subhead">Enter wallet address, to request funds.</p>
+        <form action="/faucet" method="post" id="coin-form" class="pure-form">
+          <fieldset>
+            <input type="text" placeholder="Address" />
+          </fieldset>
+        </form>
+        <p>
+          <a href="#" id="submit" class="pure-button pure-button-primary"
+            >Get Coin</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <script src="jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#submit").click(function (e) {
+          $("#coin-form").submit();
+        });
+      });
+    </script>
+  </body>
+</html>
