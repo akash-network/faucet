@@ -5,6 +5,7 @@ import parse from "parse-duration";
 const NETWORK_RPC_NODE = process.env.NETWORK_RPC_NODE;
 const FAUCET_MNEMONIC = process.env.FAUCET_MNEMONIC;
 const FAUCET_WAIT_PERIOD = process.env.FAUCET_WAIT_PERIOD || "24h";
+const FAUCET_EXPIRATION = process.env.FAUCET_EXPIRATION || "24h";
 const FAUCET_DISTRIBUTION_AMOUNT =
   process.env.FAUCET_DISTRIBUTION_AMOUNT || 1000;
 const FAUCET_DENOM = process.env.FAUCET_DENOM || "uakt";
@@ -24,6 +25,10 @@ export const getDenom = () => {
 
 export const getWaitPeriod = () => {
   return parse(FAUCET_WAIT_PERIOD);
+};
+
+export const getExpiration = () => {
+  return parse(FAUCET_EXPIRATION);
 };
 
 export const getDistributionAmount = () => {
@@ -48,12 +53,22 @@ export const sendTokens = async (recipient: any, amount: any) => {
   );
   if (!amount) amount = getDistributionAmount();
 
+  let expiryDate = new Date(
+    (new Date() as any) + getExpiration()
+  );
+
   const sendMsg = {
-    typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+    typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
     value: {
-      fromAddress: account.address,
-      toAddress: recipient,
-      amount: coins(parseInt(amount), FAUCET_DENOM),
+      granter: account.address,
+      grantee: recipient,
+      grant: {
+        authorization: {
+          "@type": "/akash.deployment.v1beta2.DepositDeploymentAuthorization",
+          "spendLimit": coins(parseInt(amount), FAUCET_DENOM)
+        },
+        "expiration": expiryDate.toISOString()
+      }
     },
   };
   const fee = {
