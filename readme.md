@@ -12,24 +12,40 @@ Users have rate-limited access to the faucet with a configurable wait period. If
 
 This faucet is configured to work with Akash but will work with any Tendermint SDK based chain.
 
-## Configuration
+## Environment Variables
+
+Create a local `.env` file from the `.env.example` file
 
 ```bash
-POSTGRES_HOST: postgres
-POSTGRES_PORT: 5432
-POSTGRES_DB: faucet
-POSTGRES_USER: postgres
-POSTGRES_PASSWORD: password
-NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
-FAUCET_WAIT_PERIOD: 1d
-FAUCET_DISTRIBUTION_AMOUNT: 1000
-FAUCET_DENOM: uakt
-FAUCET_FEES: 5000
-FAUCET_GAS: 180000
-FAUCET_MEMO: Sent from Faucet
-AUTH0_DOMAIN: mydomain.us.auth0.com
-AUTH0_AUDIENCE: https://mydomain.com
-FAUCET_MNEMONIC: some secret words here
+cp .env.example .env
+```
+
+Open the `.env` file and add required values
+
+```bash
+NETWORK_RPC_NODE="https://rpc.akash.beyno.de:443"
+FAUCET_WAIT_PERIOD=1d
+FAUCET_DISTRIBUTION_AMOUNT=1000
+FAUCET_DENOM=uakt
+FAUCET_FEES=5000
+FAUCET_GAS=180000
+FAUCET_MEMO="Sent from Faucet"
+FAUCET_MNEMONIC="secret words"
+# uncomment line below for local dev
+# INLINE_UI=true
+
+# comment out all lines below for local dev
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=faucet
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+
+PROM_USER=prom
+PROM_PASSWORD=client
+
+AUTH0_DOMAIN="mydomain.us.auth0.com"
+AUTH0_AUDIENCE="https=//mydomain.com"
 ```
 
 ## Endpoints

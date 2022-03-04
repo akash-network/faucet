@@ -18,7 +18,7 @@ const PROM_PASSWORD = process.env.PROM_PASSWORD;
 const DOMAIN = process.env.AUTH0_DOMAIN;
 
 async function init() {
-  // var app = express();
+  
   const app = fastify({
     logger: true,
   });
