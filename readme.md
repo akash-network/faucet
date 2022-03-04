@@ -4,20 +4,17 @@ Faucet server for the [Akash Network](https://akash.network)
 
 ## How to use
 
-The faucet is authenticated using Auth0 and the 
-[SPA with API](https://auth0.com/docs/architecture-scenarios/spa-api) architecture. 
+The faucet is authenticated using `Auth0` and the [SPA API](https://auth0.com/docs/architecture-scenarios/spa-api) architecture. 
+
 A good example of this setup is the [Akash faucet UI](). 
 
-Users have rate-limited access to the faucet with a configurable wait period. 
-If the `manage:faucet` permission is given to a user in Auth0, additional 
-endpoints are accessible to view transaction and user history, and manage
-a list of blocked addresses.
+Users have rate-limited access to the faucet with a configurable wait period. If the `manage:faucet` permission is given to a user in Auth0, additional endpoints are accessible to view transaction and user history, and manage a list of blocked addresses.
 
 This faucet is configured to work with Akash but will work with any Tendermint SDK based chain.
 
 ## Configuration
 
-```
+```bash
 POSTGRES_HOST: postgres
 POSTGRES_PORT: 5432
 POSTGRES_DB: faucet
@@ -46,7 +43,7 @@ Returns status about the faucet
 
 #### Response
 
-```
+```bash
 {
   'faucetAddress': 'akash1...',
   'unlockDate': '2020-10-10T14:48:00',
@@ -61,7 +58,7 @@ Request funds from the faucet. Requires an access token.
 
 #### Params
 
-```
+```bash
 {
   'address': 'akash1...'
 }
@@ -69,7 +66,7 @@ Request funds from the faucet. Requires an access token.
 
 #### Response
 
-```
+```bash
 {
   'transactionHash': 'A5BE0243169DAF5A...'
 }
@@ -82,7 +79,7 @@ Returns an array of users who have used the faucet. Requires an access token wit
 
 #### Response
 
-```
+```bash
 [{
   'id': 1,
   'sub': 'github|1',
@@ -102,7 +99,7 @@ Returns an array of transactions sent from the faucet. Requires an access token 
 
 #### Response
 
-```
+```bash
 [{
   'id': 1,
   'userId': 1,
@@ -124,7 +121,7 @@ Returns an array of blocked addresses. Requires an access token with the
 
 #### Response
 
-```
+```bash
 [{
   'id': 1,
   'address': 'akash1...',
@@ -139,7 +136,7 @@ Create a blocked addresses. Requires an access token with the `manage:faucet` pe
 
 #### Params
 
-```
+```bash
 {
   address: 'akash1...'
 }
@@ -147,7 +144,7 @@ Create a blocked addresses. Requires an access token with the `manage:faucet` pe
 
 #### Response
 
-```
+```bash
 {}
 ```
 
