@@ -18,9 +18,17 @@ router.get("/", async (req: any, res: any, next: any) => {
   let unlockDate;
   
   const wallet = await faucet.getWallet();
-  const chainId = await faucet.getChainId();
+  
+  let chainId;
+  try {
+    chainId = await faucet.getChainId();
+  } catch (error) {
+    console.log('ERROR: faucet.getChainId()', error)
+  }
+
   const distributionAmount = faucet.getDistributionAmount();
   const distributionDenom = faucet.getDenom();
+  
   const [{ address }] = await wallet.getAccounts();
   
   if (req.user && req.user.id) {
