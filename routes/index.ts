@@ -15,18 +15,27 @@ const INLINE_UI = process.env.INLINE_UI;
 
 /* GET home page. */
 router.get("/", async (req: any, res: any, next: any) => {
+  let unlockDate;
+  
   const wallet = await faucet.getWallet();
-  const chainId = await faucet.getChainId();
-  const distributionAmount = faucet.getDistributionAmount();
-  const distrbutionDenom = faucet.getDenom();
-  const [{ address }] = await wallet.getAccounts();
-  var unlockDate;
+  
+  let chainId;
+  try {
+    chainId = await faucet.getChainId();
+  } catch (error) {
+    console.log('ERROR: faucet.getChainId()', error)
+  }
 
+  const distributionAmount = faucet.getDistributionAmount();
+  const distributionDenom = faucet.getDenom();
+  
+  const [{ address }] = await wallet.getAccounts();
+  
   if (req.user && req.user.id) {
-    let cooldownDate = new Date(
+    let coolDownDate = new Date(
       (new Date() as any) - (faucet.getWaitPeriod() as any)
     );
-    let transaction: any = await latestTransactionSince(req.user, cooldownDate);
+    let transaction: any = await latestTransactionSince(req.user, coolDownDate);
     if (transaction)
       unlockDate = new Date(
         transaction.createdAt.getTime() + faucet.getWaitPeriod()
@@ -42,7 +51,7 @@ router.get("/", async (req: any, res: any, next: any) => {
         unlockDate,
         chainId,
         distributionAmount,
-        distrbutionDenom,
+        distributionDenom,
       })
     );
   } else {

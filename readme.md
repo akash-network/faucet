@@ -4,35 +4,48 @@ Faucet server for the [Akash Network](https://akash.network)
 
 ## How to use
 
-The faucet is authenticated using Auth0 and the 
-[SPA with API](https://auth0.com/docs/architecture-scenarios/spa-api) architecture. 
+The faucet is authenticated using `Auth0` and the [SPA API](https://auth0.com/docs/architecture-scenarios/spa-api) architecture. 
+
 A good example of this setup is the [Akash faucet UI](). 
 
-Users have rate-limited access to the faucet with a configurable wait period. 
-If the `manage:faucet` permission is given to a user in Auth0, additional 
-endpoints are accessible to view transaction and user history, and manage
-a list of blocked addresses.
+Users have rate-limited access to the faucet with a configurable wait period. If the `manage:faucet` permission is given to a user in Auth0, additional endpoints are accessible to view transaction and user history, and manage a list of blocked addresses.
 
 This faucet is configured to work with Akash but will work with any Tendermint SDK based chain.
 
-## Configuration
+## Environment Variables
 
+Create a local `.env` file from the `.env.example` file
+
+```bash
+cp .env.example .env
 ```
-POSTGRES_HOST: postgres
-POSTGRES_PORT: 5432
-POSTGRES_DB: faucet
-POSTGRES_USER: postgres
-POSTGRES_PASSWORD: password
-NETWORK_RPC_NODE: https://rpc.akash.beyno.de:443
-FAUCET_WAIT_PERIOD: 1d
-FAUCET_DISTRIBUTION_AMOUNT: 1000
-FAUCET_DENOM: uakt
-FAUCET_FEES: 5000
-FAUCET_GAS: 180000
-FAUCET_MEMO: Sent from Faucet
-AUTH0_DOMAIN: mydomain.us.auth0.com
-AUTH0_AUDIENCE: https://mydomain.com
-FAUCET_MNEMONIC: some secret words here
+
+Open the `.env` file and add required values
+
+```bash
+NETWORK_RPC_NODE="https://rpc.akash.beyno.de:443"
+FAUCET_WAIT_PERIOD=1d
+FAUCET_DISTRIBUTION_AMOUNT=1000
+FAUCET_DENOM=uakt
+FAUCET_FEES=5000
+FAUCET_GAS=180000
+FAUCET_MEMO="Sent from Faucet"
+FAUCET_MNEMONIC="secret words"
+# uncomment line below for local dev
+# INLINE_UI=true
+
+# comment out all lines below for local dev
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=faucet
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+
+PROM_USER=prom
+PROM_PASSWORD=client
+
+AUTH0_DOMAIN="mydomain.us.auth0.com"
+AUTH0_AUDIENCE="https=//mydomain.com"
 ```
 
 ## Endpoints
@@ -46,7 +59,7 @@ Returns status about the faucet
 
 #### Response
 
-```
+```bash
 {
   'faucetAddress': 'akash1...',
   'unlockDate': '2020-10-10T14:48:00',
@@ -61,7 +74,7 @@ Request funds from the faucet. Requires an access token.
 
 #### Params
 
-```
+```bash
 {
   'address': 'akash1...'
 }
@@ -69,7 +82,7 @@ Request funds from the faucet. Requires an access token.
 
 #### Response
 
-```
+```bash
 {
   'transactionHash': 'A5BE0243169DAF5A...'
 }
@@ -82,7 +95,7 @@ Returns an array of users who have used the faucet. Requires an access token wit
 
 #### Response
 
-```
+```bash
 [{
   'id': 1,
   'sub': 'github|1',
@@ -102,7 +115,7 @@ Returns an array of transactions sent from the faucet. Requires an access token 
 
 #### Response
 
-```
+```bash
 [{
   'id': 1,
   'userId': 1,
@@ -124,7 +137,7 @@ Returns an array of blocked addresses. Requires an access token with the
 
 #### Response
 
-```
+```bash
 [{
   'id': 1,
   'address': 'akash1...',
@@ -139,7 +152,7 @@ Create a blocked addresses. Requires an access token with the `manage:faucet` pe
 
 #### Params
 
-```
+```bash
 {
   address: 'akash1...'
 }
@@ -147,7 +160,7 @@ Create a blocked addresses. Requires an access token with the `manage:faucet` pe
 
 #### Response
 
-```
+```bash
 {}
 ```
 

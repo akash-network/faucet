@@ -1,19 +1,24 @@
 #!/usr/bin/env node
-
+require('dotenv').config();
 require("ts-node").register();
-let { init } = require("../app");
-let http = require("http");
+
+const log = require('ololog');
+const { init } = require("../app");
+const http = require("http");
+
+const SERVER_PORT = process.env.SERVER_PORT || "3000";
 
 (async () => {
   const app = await init();
-  let port = process.env.PORT || "3000";
-
+  
   // Run the server!
-  app.listen(port, "0.0.0.0", function (err, address) {
+  app.listen(SERVER_PORT, (err, address) => {
     if (err) {
       app.log.error(err);
       process.exit(1);
     }
+    log.yellow(`server listening on SERVER_PORT: ${SERVER_PORT}`)
     app.log.info(`server listening on ${address}`);
   });
+
 })();
