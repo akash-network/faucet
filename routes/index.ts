@@ -16,6 +16,7 @@ const INLINE_UI = process.env.INLINE_UI;
 /* GET home page. */
 router.get("/", async (req: any, res: any, next: any) => {
   let unlockDate;
+  
   const wallet = await faucet.getWallet();
   const chainId = await faucet.getChainId();
   const distributionAmount = faucet.getDistributionAmount();

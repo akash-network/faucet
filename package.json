@@ -26,6 +26,7 @@
     "handlebars": "^4.7.7",
     "jwks-rsa": "^2.0.4",
     "nodemon": "^2.0.12",
+    "ololog": "^1.1.175",
     "parse-duration": "^1.0.0",
     "pg": "^8.7.1",
     "point-of-view": "^5.0.0",

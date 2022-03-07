@@ -72,7 +72,7 @@ async function init() {
 
   await app.register(fastifyExpress);
 
-  // this cors module is needed for expressjs methods
+  // this cors module is needed for express-js methods
   app.use(require("cors")());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
