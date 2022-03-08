@@ -3,10 +3,10 @@ import { BlockedAddress, latestTransactionSince } from "./database";
 import * as faucet from "./faucet";
 import client from "prom-client";
 import got from "got";
-import retry, {OperationOptions} from 'retry';
+import log from "ololog";
 
-//AUTH0_CLIENTID
-//AUTH0_CLIENTSECRET
+const promiseRetry = require("promise-retry");
+
 const authCID = process.env.AUTH0_CLIENTID;
 const authSECRET = process.env.AUTH0_CLIENTSECRET;
 const DOMAIN = process.env.AUTH0_DOMAIN;
@@ -122,80 +122,26 @@ export async function blockedAddresses(req: any, res: any, next: any) {
 }
 
 
-
-interface FailedAttemptError extends Error {
-	readonly attemptNumber: number;
-	readonly retriesLeft: number;
-}
-
-interface Options extends OperationOptions {
-  readonly onFailedAttempt?: (error: FailedAttemptError | any) => void | Promise<void>;
-}
-
-class AbortErrorType extends Error {
-	name!: 'AbortError'
-	originalError!: Error;
-
-	/**
-	Abort retrying and reject the promise.
-
-	@param message - An error message or a custom error.
-	*/
-	constructor(message: string | Error) {
-    super();
-  }
-}
-
-export class AbortError extends AbortErrorType {
-	constructor(message: string | Error) {
-		super(message);
-
-		if (message instanceof Error) {
-			this.originalError = message;
-			({message} = message);
-		} else {
-			this.originalError = new Error(message);
-			this.originalError.stack = this.stack;
-		}
-
-		this.name = 'AbortError';
-		this.message = message;
-	}
-}
-
-const networkErrorMsgs = new Set([
-	'Failed to fetch', // Chrome
-	'NetworkError when attempting to fetch resource.', // Firefox
-	'The Internet connection appears to be offline.', // Safari
-	'Network request failed', // `cross-fetch`
-]);
-
-const decorateErrorWithCounts = (error: Error, attemptNumber: number, options: Options) => {
-	// Minus 1 from attemptNumber because the first attempt does not count as a retry
-	const retriesLeft = options?.retries? - (attemptNumber - 1) : 0;
-
-	return {
-    attemptNumber,
-    retriesLeft
-  };
-};
-
-const isNetworkError = (errorMessage: string) => networkErrorMsgs.has(errorMessage);
-
-export async function pRetry<T>(input: (attemptCount: number) => Promise<T>, options: Options) {
-  return new Promise((resolve, reject) => {
-    options = {
-      onFailedAttempt: () => {},
-      retries: 3,
-      ...options,
-    }
-    const operation = retry.operation(options);
-    operation.attempt(async (attemptNumber) => {
-      try {
-        resolve(await input(attemptNumber));
-      } catch (error) {
-        reject(error);
+/**
+ * Retry 
+ *
+ * @param {Function} fn - An async function
+ * @param {string} fname - The name of the async function
+ * @returns {object} The desired response object or an error
+ * */
+export const retry = async (fn: Function, fname: string) => {
+  const res = await promiseRetry(
+    async (retry: any, number: number) => {
+      if (number > 1) {
+        log.red(`Retrying ${fname}...${number}`);
       }
-    })
-  })
-}
+      try {
+        return await fn();
+      } catch (error) {
+        await retry(error);
+      }
+    },
+    { retries: 5, minTimeout: 1 * 1000, maxTimeout: 10 * 1000 }
+  );
+  return res;
+};
