@@ -3,9 +3,10 @@ import { BlockedAddress, latestTransactionSince } from "./database";
 import * as faucet from "./faucet";
 import client from "prom-client";
 import got from "got";
+import log from "ololog";
 
-//AUTH0_CLIENTID
-//AUTH0_CLIENTSECRET
+const promiseRetry = require("promise-retry");
+
 const authCID = process.env.AUTH0_CLIENTID;
 const authSECRET = process.env.AUTH0_CLIENTSECRET;
 const DOMAIN = process.env.AUTH0_DOMAIN;
@@ -112,10 +113,35 @@ export async function blockedAddresses(req: any, res: any, next: any) {
       return res.status(403).send(
         JSON.stringify({
           error:
-            "This address has been blocked from recieving funds from this faucet.",
+            "This address has been blocked from receiving funds from this faucet.",
         })
       );
     }
   }
   next();
 }
+
+
+/**
+ * Retry 
+ *
+ * @param {Function} fn - An async function
+ * @param {string} fname - The name of the async function
+ * @returns {object} The desired response object or an error
+ * */
+export const retry = async (fn: Function, fname: string) => {
+  const res = await promiseRetry(
+    async (retry: any, number: number) => {
+      if (number > 1) {
+        log.red(`Retrying ${fname}...${number}`);
+      }
+      try {
+        return await fn();
+      } catch (error) {
+        await retry(error);
+      }
+    },
+    { retries: 5, minTimeout: 1 * 1000, maxTimeout: 10 * 1000 }
+  );
+  return res;
+};

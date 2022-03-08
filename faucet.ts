@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient, coins } from '@cosmjs/stargate';
 import parse from 'parse-duration';
-import client from "prom-client";
+import client from 'prom-client';
 
 const NETWORK_RPC_NODE = process.env.NETWORK_RPC_NODE;
 const FAUCET_MNEMONIC = process.env.FAUCET_MNEMONIC;
@@ -16,16 +16,16 @@ const FAUCET_GAS = process.env.FAUCET_GAS || 180000;
 const FAUCET_MEMO = process.env.FAUCET_MEMO;
 
 const counterGetChainIdCount = new client.Counter({
-  name: "faucet_getChainId_count",
-  help: "faucet_getChainId_count is the number of times getChainId is being called",
+  name: 'faucet_getChainId_count',
+  help: 'faucet_getChainId_count is the number of times getChainId is being called',
 });
 const counterGetChainIdCountPost = new client.Counter({
-  name: "faucet_getChainId_post_count",
-  help: "faucet_getChainId_post_count is the number of times getChainId is being called",
+  name: 'faucet_getChainId_post_count',
+  help: 'faucet_getChainId_post_count is the number of times getChainId is being called',
 });
 const counterGetChainIdCountRes = new client.Counter({
-  name: "faucet_getChainId_res_count",
-  help: "faucet_getChainId_res_count is the number of times getChainId is being called",
+  name: 'faucet_getChainId_res_count',
+  help: 'faucet_getChainId_res_count is the number of times getChainId is being called',
 });
 
 export const getWallet = () => {
@@ -49,12 +49,12 @@ export const getDistributionAmount = () => {
 export const getChainId = async () => {
   counterGetChainIdCount.inc();
   const wallet = await getWallet();
-  const chaiIdClient = await SigningStargateClient.connectWithSigner(
+  const chainIdClient = await SigningStargateClient.connectWithSigner(
     NETWORK_RPC_NODE as any,
     wallet
   );
   counterGetChainIdCountPost.inc();
-  const res = await chaiIdClient.getChainId();
+  const res = await chainIdClient.getChainId();
   counterGetChainIdCountRes.inc();
   return res;
 };
@@ -69,7 +69,7 @@ export const sendTokens = async (recipient: any, amount: any) => {
   if (!amount) {
     amount = getDistributionAmount();
   }
-  
+
   const sendMsg = {
     typeUrl: '/cosmos.bank.v1beta1.MsgSend',
     value: {

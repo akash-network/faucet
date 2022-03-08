@@ -5,6 +5,7 @@ import { latestTransactionSince } from "../database";
 import * as faucet from "../faucet";
 import path from "path";
 import client from "prom-client";
+import { retry } from "../utils";
 
 const counterPreflight = new client.Counter({
   name: "faucet_preflight_count",
@@ -16,21 +17,15 @@ const INLINE_UI = process.env.INLINE_UI;
 /* GET home page. */
 router.get("/", async (req: any, res: any, next: any) => {
   let unlockDate;
-  
-  const wallet = await faucet.getWallet();
-  
-  let chainId;
-  try {
-    chainId = await faucet.getChainId();
-  } catch (error) {
-    console.log('ERROR: faucet.getChainId()', error)
-  }
+
+  const wallet = await retry(faucet.getWallet, "faucet.getWallet");
+  const chainId = await retry(faucet.getChainId, "faucet.chainId");
 
   const distributionAmount = faucet.getDistributionAmount();
   const distributionDenom = faucet.getDenom();
-  
+
   const [{ address }] = await wallet.getAccounts();
-  
+
   if (req.user && req.user.id) {
     let coolDownDate = new Date(
       (new Date() as any) - (faucet.getWaitPeriod() as any)
